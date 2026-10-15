@@ -62,7 +62,7 @@ details.topic>summary h3{font-size:1.07rem;flex:1 1 240px}
 .body{padding:2px 18px 16px}
 .body h4{font-size:.98rem;margin:1.1em 0 .3em}
 .tw{overflow-x:auto;margin:.7em 0}
-.tw.ov::before,.sx::before{content:"\2194  Geser ke samping";display:block;position:sticky;left:0;width:max-content;font-size:.7rem;font-weight:600;color:var(--blue2);background:var(--tint);border-radius:99px;padding:1px 9px;margin:0 0 5px}
+.tw.ov::before,.sx.ov::before{content:"\2194  Geser ke samping";display:block;position:sticky;left:0;width:max-content;font-size:.7rem;font-weight:600;color:var(--blue2);background:var(--tint);border-radius:99px;padding:1px 9px;margin:0 0 5px}
 .sx{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:.9rem}
 th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
@@ -219,6 +219,17 @@ svg .hzp:hover{filter:brightness(1.06)}
 .yr{display:inline-block;font-size:.7rem;font-weight:800;border-radius:99px;padding:1px 8px;background:var(--navy);color:#fff;margin-right:4px}
 .yr.n{background:var(--yellow);color:var(--navy)}
 .ans-st{color:#8B1A1A;font-style:italic}
+.ic{font-size:1.15em}
+.flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.flip{perspective:700px;height:170px;cursor:pointer;outline:none}
+.fi3{position:relative;width:100%;height:100%;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .fi3{transform:rotateY(180deg)}
+.fr,.bk{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;border:1.5px solid var(--pale);padding:10px;display:flex;flex-direction:column}
+.fr{background:linear-gradient(160deg,#fff,var(--tint));align-items:center;justify-content:center;gap:6px;text-align:center;color:var(--navy)}
+.bk{background:var(--navy);color:#EAF3FB;transform:rotateY(180deg);font-size:.78rem;line-height:1.4;overflow:auto}.bk b{color:var(--yellow)}
+.obj{font-size:3.2rem;display:inline-block;animation:spin3d 4s linear infinite}
+@keyframes spin3d{from{transform:perspective(300px) rotateY(0)}to{transform:perspective(300px) rotateY(360deg)}}
+@media (prefers-reduced-motion:reduce){.obj{animation:none}.fi3{transition:none}}
 @media (max-width:600px){.lay .ly>b{min-width:0;flex-basis:100%}}
 </style>
 </head>
@@ -331,7 +342,7 @@ window.IMK_Q = {"p1": {"t": "Paket 1 · campuran", "d": "10 pilihan ganda, 5 isi
 
   /* ---------- layar kecil: diagram dan tabel bisa digeser ---------- */
   T.fit = function () {
-    $$('.tw').forEach(function (w) { if (w.clientWidth) w.classList.toggle('ov', w.scrollWidth > w.clientWidth + 2); });
+    $$('.tw,.sx').forEach(function (w) { if (w.clientWidth) w.classList.toggle('ov', w.scrollWidth > w.clientWidth + 2); });
     if (!window.matchMedia('(max-width:640px)').matches) return;
     $$('svg[viewBox]').forEach(function (s) {
       if (s.dataset.mfit || s.closest('button,.tip,nav')) return; var vb = s.viewBox.baseVal, p = s.parentElement;
