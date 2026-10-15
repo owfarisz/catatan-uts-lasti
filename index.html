@@ -454,7 +454,7 @@ svg .hzp:hover{filter:brightness(1.06)}
 <details class="topic" id="t2-utility"><summary><h3>Service portfolio: utility dan warranty</h3><span class="badge">UTS 20/21</span></summary><div class="body">
 <p><b>Service portfolio</b> adalah kumpulan semua layanan, didefinisikan berbasis outcome dari sudut pandang apa yang bernilai bagi pelanggan. Nilai (value) tercipta dari <b>utility dan warranty yang bekerja bersama</b>.</p>
 <svg viewBox="0 0 600 230" class="hz" role="img" aria-label="Utility dan warranty membentuk value">
-<rect x="10" y="10" width="34" height="210" rx="8" fill="#F6C9C3" stroke="#C0392B"/><text x="27" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#8B1A1A" transform="rotate(-90 27 118)">Business requirements</text>
+<g class="hzp" data-tip="<b>Business requirements</b><br>Kebutuhan bisnis pelanggan diuji lewat dua kelompok pertanyaan: utility (performance supported? constraints removed?) dan warranty (availability, capacity, continuity, security enough?)."><rect x="10" y="10" width="34" height="210" rx="8" fill="#F6C9C3" stroke="#C0392B"/><text x="27" y="118" text-anchor="middle" font-size="11" font-weight="700" fill="#8B1A1A" transform="rotate(-90 27 118)">Business requirements</text></g>
 <g class="hzp" data-tip="<b>Utility: fit for purpose</b><br>What the customer gets, the positive impact. Functional requirements: apa yang dilakukan layanan, fitur, input, output. Pertanyaan: performance supported? constraints removed?"><text x="60" y="44" font-size="11" fill="#263F77">Performance supported?</text><text x="60" y="74" font-size="11" fill="#263F77">Constraints removed?</text><rect x="210" y="26" width="110" height="60" rx="10" fill="#263F77"/><text x="265" y="61" text-anchor="middle" font-size="14" font-weight="800" fill="#E0DE50">Utility</text><text x="335" y="61" font-size="11" font-weight="700" fill="#315A96">fit for purpose</text></g>
 <g class="hzp" data-tip="<b>Warranty: fit for use</b><br>How well it is delivered: kepastian dampak dari sisi security, availability, capacity, continuity. Non-functional requirements. Pertanyaan: availability enough? capacity enough? continuous enough? secure enough?"><text x="60" y="122" font-size="11" fill="#263F77">Availability enough?</text><text x="60" y="148" font-size="11" fill="#263F77">Capacity enough?</text><text x="60" y="174" font-size="11" fill="#263F77">Continuous enough?</text><text x="60" y="200" font-size="11" fill="#263F77">Secure enough?</text><rect x="210" y="132" width="110" height="60" rx="10" fill="#315A96"/><text x="265" y="167" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">Warranty</text><text x="335" y="167" font-size="11" font-weight="700" fill="#315A96">fit for use</text></g>
 <g class="hzp" data-tip="<b>Value</b><br>Nilai bagi pelanggan baru tercipta jika layanan fit for purpose DAN fit for use."><rect x="470" y="60" width="110" height="100" rx="12" fill="#E0DE50" stroke="#9E9C22"/><text x="525" y="115" text-anchor="middle" font-size="16" font-weight="800" fill="#263F77">Value</text></g>
@@ -1057,11 +1057,13 @@ svg .hzp:hover{filter:brightness(1.06)}
   /* ---------- popover ---------- */
   T.tips = function () {
     var tip = T.H('div', { class: 'tip', role: 'tooltip' }); tip.hidden = true; document.body.appendChild(tip);
-    var pinned = null, shown = null;
+    var pinned = null, shown = null, ptr = null;
+    document.addEventListener('pointermove', function (e) { ptr = { x: e.clientX, y: e.clientY }; }, { passive: true });
+    document.addEventListener('pointerdown', function (e) { ptr = { x: e.clientX, y: e.clientY }; }, { passive: true });
     function find(t) { return t && t.closest ? t.closest('[data-tip]') : null; }
     function show(el) {
       shown = el; tip.innerHTML = el.getAttribute('data-tip'); tip.hidden = false; tip.style.left = '0px'; tip.style.top = '0px';
-      var r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight, vw = document.documentElement.clientWidth;
+      var r = el.getBoundingClientRect(); if (el.ownerSVGElement && ptr && ptr.x >= r.left - 2 && ptr.x <= r.right + 2 && ptr.y >= r.top - 2 && ptr.y <= r.bottom + 2) r = { left: ptr.x - 1, right: ptr.x + 1, width: 2, top: ptr.y - 12, bottom: ptr.y + 12 }; var w = tip.offsetWidth, h = tip.offsetHeight, vw = document.documentElement.clientWidth;
       var x = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, vw - w - 8)), y = r.bottom + 8;
       if (y + h > window.innerHeight - 8 && r.top - h - 8 > 0) y = r.top - h - 8;
       tip.style.left = (x + window.pageXOffset) + 'px'; tip.style.top = (y + window.pageYOffset) + 'px';

@@ -267,11 +267,13 @@ window.IMK_Q = {"p1": {"t": "Paket 1 · campuran", "d": "10 pilihan ganda, 5 isi
   /* ---------- popover ---------- */
   T.tips = function () {
     var tip = T.H('div', { class: 'tip', role: 'tooltip' }); tip.hidden = true; document.body.appendChild(tip);
-    var pinned = null, shown = null;
+    var pinned = null, shown = null, ptr = null;
+    document.addEventListener('pointermove', function (e) { ptr = { x: e.clientX, y: e.clientY }; }, { passive: true });
+    document.addEventListener('pointerdown', function (e) { ptr = { x: e.clientX, y: e.clientY }; }, { passive: true });
     function find(t) { return t && t.closest ? t.closest('[data-tip]') : null; }
     function show(el) {
       shown = el; tip.innerHTML = el.getAttribute('data-tip'); tip.hidden = false; tip.style.left = '0px'; tip.style.top = '0px';
-      var r = el.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight, vw = document.documentElement.clientWidth;
+      var r = el.getBoundingClientRect(); if (el.ownerSVGElement && ptr && ptr.x >= r.left - 2 && ptr.x <= r.right + 2 && ptr.y >= r.top - 2 && ptr.y <= r.bottom + 2) r = { left: ptr.x - 1, right: ptr.x + 1, width: 2, top: ptr.y - 12, bottom: ptr.y + 12 }; var w = tip.offsetWidth, h = tip.offsetHeight, vw = document.documentElement.clientWidth;
       var x = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, vw - w - 8)), y = r.bottom + 8;
       if (y + h > window.innerHeight - 8 && r.top - h - 8 > 0) y = r.top - h - 8;
       tip.style.left = (x + window.pageXOffset) + 'px'; tip.style.top = (y + window.pageYOffset) + 'px';
