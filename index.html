@@ -821,6 +821,28 @@ svg .hzp:hover{filter:brightness(1.06)}
   };
 })();
 
+/* ---------- cek versi terbaru: banner muat ulang ---------- */
+(function () {
+  var cur = null, shown = false;
+  function bar() {
+    if (shown) return; shown = true;
+    var b = document.createElement('div');
+    b.setAttribute('role', 'status');
+    b.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:300;background:#263F77;color:#fff;border:2px solid #E0DE50;border-radius:12px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:.9rem;display:flex;gap:10px;align-items:center;max-width:calc(100vw - 24px);flex-wrap:wrap';
+    b.innerHTML = '<span>Ada versi terbaru halaman ini.</span><button type="button" style="font:inherit;font-weight:700;background:#E0DE50;color:#263F77;border:0;border-radius:8px;padding:6px 12px;cursor:pointer">Muat ulang</button>';
+    b.querySelector('button').addEventListener('click', function () { location.reload(); });
+    document.body.appendChild(b);
+  }
+  function check() {
+    if (!/^https?:/.test(location.protocol) || typeof fetch !== 'function') return;
+    fetch('version.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (!j || !j.v) return; if (cur === null) cur = window.BUILD_V || j.v; if (j.v !== cur) bar();
+    }).catch(function () {});
+  }
+  window.addEventListener('load', function () { setTimeout(check, 3000); setInterval(check, 90000); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) check(); });
+})();
+
 </script>
 <script>
 /* ===== Glosarium LASTI: [[istilah, variasi...], arti, contoh] ===== */
@@ -1096,5 +1118,6 @@ window.IMK_GLOSS = [
 })();
 
 </script>
+<script>window.BUILD_V="20261016004137";</script>
 </body>
 </html>
