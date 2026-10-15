@@ -220,6 +220,7 @@ svg .hzp:hover{filter:brightness(1.06)}
 .yr.n{background:var(--yellow);color:var(--navy)}
 .ans-st{color:#8B1A1A;font-style:italic}
 .ic{font-size:1.15em}
+.rekap{margin:6px 0 0;padding-left:1.4em}.rekap li{margin:7px 0;padding:6px 9px;border-radius:8px;border-left:4px solid var(--good);background:var(--goodbg)}.rekap li.no{border-left-color:var(--bad);background:var(--badbg)}
 .tools a.go.alt{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.4)}
 .flips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .flip{perspective:700px;height:170px;cursor:pointer;outline:none}
@@ -1193,21 +1194,26 @@ svg .hzp:hover{filter:brightness(1.06)}
   T.picks = function (DATA) {
     $$('[data-pick]').forEach(function (w) {
       var d = DATA[w.getAttribute('data-pick')]; if (!d) { w.setAttribute('data-missing', '1'); return; }
-      w.classList.add('widget', 'pick'); var order, i, score;
+      w.classList.add('widget', 'pick'); var order, i, score, log;
       function build() {
-        order = T.shuffle(d.items); i = 0; score = 0;
+        order = T.shuffle(d.items); i = 0; score = 0; log = [];
         w.innerHTML = '<div class="wt">' + d.t + '</div><div class="small muted">Soal <b class="pi">1</b> dari ' + order.length + ' · benar <b class="ps">0</b></div><div class="bar"><i></i></div><div class="item nogl"></div><div class="opts"></div><div class="msg small" hidden></div><div class="ctl"><button class="btn pri nx" type="button" hidden>Soal berikutnya ›</button><button class="btn rs" type="button">Ulangi dari awal</button></div>';
         $('.rs', w).addEventListener('click', build); $('.nx', w).addEventListener('click', function () { i++; show(); }); show();
       }
       function show() {
         var msg = $('.msg', w), nx = $('.nx', w), item = $('.item', w), opts = $('.opts', w);
         $('.bar i', w).style.width = (i / order.length * 100) + '%'; nx.hidden = true; msg.hidden = true;
-        if (i >= order.length) { item.innerHTML = 'Selesai. Skor kamu <b>' + score + ' dari ' + order.length + '</b>. ' + (score === order.length ? 'Sempurna.' : 'Ulangi untuk yang masih salah.'); opts.innerHTML = ''; $('.pi', w).textContent = order.length; return; }
+        if (i >= order.length) {
+          item.innerHTML = 'Selesai. Skor kamu <b>' + score + ' dari ' + order.length + '</b>. ' + (score === order.length ? 'Sempurna.' : 'Lihat rekap di bawah untuk yang masih salah, lalu ulangi.'); opts.innerHTML = ''; $('.pi', w).textContent = order.length;
+          msg.hidden = false;
+          msg.innerHTML = '<b>Rekap jawaban</b><ol class="rekap">' + log.map(function (r) { return '<li class="' + (r.ok ? 'ok' : 'no') + '"><div>' + r.q + '</div><div class="small">' + (r.ok ? '<b class="good">✓ Benar:</b> ' + r.right : '<b class="bad">✗ Jawabanmu:</b> ' + r.pick + ' · <b class="good">Jawaban benar:</b> ' + r.right) + '</div><div class="small muted">' + r.why + '</div></li>'; }).join('') + '</ol>';
+          return;
+        }
         var it = order[i]; $('.pi', w).textContent = i + 1; item.innerHTML = it[0]; opts.innerHTML = '';
         d.b.forEach(function (lab, k) {
           var b = T.H('button', { type: 'button' }, lab);
           b.addEventListener('click', function () {
-            if (b.disabled) return; var ok = k === it[1]; if (ok) score++; $('.ps', w).textContent = score;
+            if (b.disabled) return; var ok = k === it[1]; if (ok) score++; log.push({ q: it[0], ok: ok, pick: lab, right: d.b[it[1]], why: it[2] }); $('.ps', w).textContent = score;
             $$('button', opts).forEach(function (x, kk) { x.disabled = true; if (kk === it[1]) x.classList.add('right'); else if (x === b) x.classList.add('wrong'); });
             msg.hidden = false; msg.innerHTML = (ok ? '<b class="good">Benar.</b> ' : '<b class="bad">Belum tepat.</b> Jawabannya <b>' + d.b[it[1]] + '</b>. ') + it[2]; nx.hidden = false; nx.textContent = i === order.length - 1 ? 'Lihat skor ›' : 'Soal berikutnya ›';
           });
@@ -1516,6 +1522,6 @@ window.IMK_GLOSS = [
 })();
 
 </script>
-<script>window.BUILD_V="20261016004137";</script>
+<script>window.BUILD_V="20261016005539";</script>
 </body>
 </html>
